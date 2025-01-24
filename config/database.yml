@@ -21,7 +21,7 @@ default: &default
 
 development:
   <<: *default
-  database: good_night_backend_development
+  url: <%= "postgres://#{ENV.fetch('DATABASE_USERNAME')}:#{ENV.fetch('DATABASE_PASSWORD')}@#{ENV.fetch('DATABASE_HOST')}:#{ENV.fetch('DATABASE_PORT', '5432')}/#{ENV.fetch('DATABASE_NAME', 'good_night_backend_development')}" %>
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -55,7 +55,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: good_night_backend_test
+  url: <%= "postgres://#{ENV.fetch('DATABASE_USERNAME')}:#{ENV.fetch('DATABASE_PASSWORD')}@#{ENV.fetch('DATABASE_HOST')}:#{ENV.fetch('DATABASE_PORT', '5432')}/#{ENV.fetch('DATABASE_TEST_NAME', 'good_night_backend_test')}" %>
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -79,6 +79,4 @@ test:
 #
 production:
   <<: *default
-  database: good_night_backend_production
-  username: good_night_backend
-  password: <%= ENV["GOOD_NIGHT_BACKEND_DATABASE_PASSWORD"] %>
+  url: <%= "postgres://#{ENV.fetch('DATABASE_USERNAME')}:#{ENV.fetch('DATABASE_PASSWORD')}@#{ENV.fetch('DATABASE_HOST')}:#{ENV.fetch('DATABASE_PORT', '5432')}/#{ENV.fetch('DATABASE_NAME')}" %>
