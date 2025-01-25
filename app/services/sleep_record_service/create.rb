@@ -20,7 +20,7 @@ module SleepRecordService
     private
 
     def validate_params
-      raise 'Invalid params' if params.blank? || params[:start_time].blank? || params[:start_time].to_datetime.blank?
+      raise GoodNightBackend::Errors::UnprocessableEntity.new if params.blank? || params[:start_time].blank? || params[:start_time].to_datetime.blank?
     end
 
     def create_sleep_record
@@ -32,7 +32,7 @@ module SleepRecordService
 
     def log_error(error)
       GoodNightBackend::Logger.error({
-        tags: ['track_sleep', 'error'],
+        tags: ['create', 'error'],
         message: "Failed to create sleep record: #{error.message}",
         backtrace: error.backtrace.take(GoodNightBackend::Constants::MAX_BACKTRACE_LENGTH),
         user_id: user_id

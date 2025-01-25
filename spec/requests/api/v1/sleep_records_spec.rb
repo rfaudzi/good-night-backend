@@ -22,9 +22,15 @@ RSpec.describe 'Sleep Records API', type: :request do
       }
 
       response '201', 'Created' do
+        let(:user) { create(:user) }
         let(:token) { "1234567890" }
         let(:Authorization) { "Bearer #{token}" }
-        
+        let(:sleep_record) { { start_time: '2025-01-01T12:00:00Z' } }
+
+        before do
+          allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
+        end
+
         examples 'application/json' => {
           data: {
             id: 1,
@@ -41,24 +47,32 @@ RSpec.describe 'Sleep Records API', type: :request do
           },
           meta: {
             http_status: 201,
-            message: 'Sleep record created'
+            message: I18n.t('sleep_record.created_successfully')
           }
         }
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['user_id']).to eq(user.id)
+          expect(data['data']['attributes']['user_id']).to eq(user.id)
         end
       end
 
       response '422', 'Unprocessable entity' do
-        let(:user_id) { nil }
+        let(:user) { create(:user) }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+        let(:sleep_record) { { start_time: '2025-01-01T12:00:00Z' } }
+
+        before do
+          allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
+          allow(SleepRecordService).to receive(:create).and_raise(GoodNightBackendError::UnprocessableEntityError.new)
+        end
         
         examples 'application/json' => {
           errors: [
             {
-              title: "Invalid request",
-              detail: "User can't be blank",
+              title: I18n.t('errors.unprocessable_entity.title'),
+              detail: I18n.t('errors.unprocessable_entity.message'),
               code: "100",
               status: "422"
             }
@@ -67,18 +81,24 @@ RSpec.describe 'Sleep Records API', type: :request do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['message']).to include("User can't be blank")
+          expect(data['errors'][0]['detail']).to include(I18n.t('errors.unprocessable_entity.message'))
         end
       end
 
       response '401', 'Unauthorized' do
-        let(:user_id) { 999 }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+        let(:sleep_record) { { start_time: '2025-01-01T12:00:00Z' } }
+
+        before do
+          allow(SleepRecordService).to receive(:create).and_raise(GoodNightBackendError::UnprocessableEntityError.new)
+        end
 
         examples 'application/json' => {
           errors: [
             {
-              title: "Invalid token",
-              detail: "The provided Bearer token is invalid or expired.",
+              title: I18n.t('errors.unauthorized.title'),
+              detail: I18n.t('errors.unauthorized.message'),
               code: "100",
               status: "401"
             }
@@ -87,18 +107,26 @@ RSpec.describe 'Sleep Records API', type: :request do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['errors'][0]['title']).to include("Invalid token")
+          expect(data['errors'][0]['title']).to include(I18n.t('errors.unauthorized.title'))
         end
       end
 
       response '403', 'Forbidden' do
-        let(:user_id) { 999 }
+        let(:user) { create(:user) }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+        let(:sleep_record) { { start_time: '2025-01-01T12:00:00Z' } }
+
+        before do
+          allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
+          allow_any_instance_of(Api::V1::SleepRecordsController).to receive(:authorize_policy).and_raise(Pundit::NotAuthorizedError.new)
+        end
 
         examples 'application/json' => {
           errors: [
             {
-              title: "Forbidden",
-              detail: "You do not have permission to access this resource",
+              title: I18n.t('errors.forbidden.title'),
+              detail: I18n.t('errors.forbidden.message'),
               code: "100",
               status: "403"
             }
@@ -107,7 +135,7 @@ RSpec.describe 'Sleep Records API', type: :request do
 
         run_test! do |response|
           data = JSON.parse(response.body)
-          expect(data['message']).to include("Forbidden")
+          expect(data['errors'][0]['title']).to include(I18n.t('errors.forbidden.title'))
         end
       end
     end
