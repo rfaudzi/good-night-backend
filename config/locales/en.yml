@@ -32,6 +32,7 @@ en:
   sleep_record:
     created_successfully: "Sleep record created successfully"
     updated_successfully: "Sleep record updated successfully"
+    listed_successfully: "Sleep records listed successfully"
   errors:
     unauthorized:
       title: "Invalid token"

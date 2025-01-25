@@ -33,15 +33,18 @@ module SleepRecordService
     private
 
     def validate_params
-      raise GoodNightBackendError::BadRequestError.new(message: I18n.t('errors.bad_request.message') + ": user_ids is required") unless @user_ids.present?
-      raise GoodNightBackendError::BadRequestError.new(message: I18n.t('errors.bad_request.message') + ": start_date_condition not available") if @start_date_condition && !AVAILABLE_START_DATE_CONDITION.include?(@start_date_condition)
-      raise GoodNightBackendError::BadRequestError.new(message: I18n.t('errors.bad_request.message') + ": order_by not available") if @order_by && !AVAILABLE_ORDER_BY.include?(@order_by)
-      raise GoodNightBackendError::BadRequestError.new(message: I18n.t('errors.bad_request.message') + ": order not available") if @order && !AVAILABLE_ORDER.include?(@order)
-      raise GoodNightBackendError::BadRequestError.new(message: I18n.t('errors.bad_request.message') + ": start_date is not a valid date_time") if @start_date.present? && @start_date.to_datetime.blank?
+      title = I18n.t('errors.bad_request.title')
+      message = I18n.t('errors.bad_request.message')
+
+      raise GoodNightBackendError::BadRequestError.new(title, message + ": user_ids is required") unless @user_ids.present?
+      raise GoodNightBackendError::BadRequestError.new(title, message + ": start_date_condition not available") if @start_date_condition && !AVAILABLE_START_DATE_CONDITION.include?(@start_date_condition)
+      raise GoodNightBackendError::BadRequestError.new(title, message + ": order_by not available") if @order_by && !AVAILABLE_ORDER_BY.include?(@order_by)
+      raise GoodNightBackendError::BadRequestError.new(title, message + ": order not available") if @order && !AVAILABLE_ORDER.include?(@order)
+      raise GoodNightBackendError::BadRequestError.new(title, message + ": start_date is not a valid date_time") if @start_date.present? && @start_date.to_datetime.blank?
     end
 
     def sleep_records
-      query_result = SleepRecord.where(user_id: @params[:user_ids])
+      query_result = SleepRecord.where(user_id: @user_ids)
 
       if @start_date.present?
         condition = AVAILABLE_START_DATE_CONDITION[@start_date_condition]
@@ -49,16 +52,16 @@ module SleepRecordService
       end
       total_count = query_result.count
 
-      query_result.order(@order_by => @order).limit(@limit).offset(@offset)
+      result = query_result.order(@order_by => @order).limit(@limit).offset(@offset)
 
-      [query_result.to_a, build_meta(total_count)]
+      [result.to_a, build_meta(total_count)]
     end
 
     def build_meta(total_count)
       {
-        total_count: total_count,
-        limit: @limit,
-        offset: @offset
+        total_count: total_count.to_i,
+        limit: @limit.to_i,
+        offset: @offset.to_i
       }
     end
 

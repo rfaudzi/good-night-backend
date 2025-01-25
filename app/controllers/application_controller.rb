@@ -12,6 +12,8 @@ class ApplicationController < ActionController::API
       render_error(exception, GoodNightBackend::Constants::STATUS_CODE[:forbidden])
     when GoodNightBackendError::NotFoundError
       render_error(exception, GoodNightBackend::Constants::STATUS_CODE[:not_found])
+    when GoodNightBackendError::BadRequestError
+      render_error(exception, GoodNightBackend::Constants::STATUS_CODE[:bad_request])
     when Pundit::NotAuthorizedError
       render_error(GoodNightBackendError::ForbiddenError.new, GoodNightBackend::Constants::STATUS_CODE[:forbidden])
     else
