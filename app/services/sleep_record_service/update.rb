@@ -19,8 +19,8 @@ module SleepRecordService
     private
 
     def validate_params
-      raise 'Invalid params' unless valid_params?
-      raise 'Sleep record not found' unless sleep_record
+      raise GoodNightBackendError::NotFoundError.new unless sleep_record
+      raise GoodNightBackendError::UnprocessableEntityError.new if sleep_record.end_time.present? || !valid_params?
     end
 
     def valid_params?
@@ -46,6 +46,8 @@ module SleepRecordService
         end_time: end_time,
         duration: duration
       )
+
+      sleep_record
     end
 
     def calculate_duration(start_time, end_time)

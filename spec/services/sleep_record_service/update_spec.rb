@@ -3,10 +3,6 @@ require 'rails_helper'
 RSpec.describe SleepRecordService::Update, type: :service do
   let!(:user) { create(:user) }
 
-  after do
-    user.destroy
-  end
-
   describe '#call' do
     context 'success' do
       context 'when sleep record exists' do
@@ -17,10 +13,6 @@ RSpec.describe SleepRecordService::Update, type: :service do
 
         before do
           allow(Time).to receive(:current).and_return(end_time)
-        end
-
-        after do
-          sleep_record.destroy
         end
 
         it 'updates the sleep record' do
@@ -34,10 +26,6 @@ RSpec.describe SleepRecordService::Update, type: :service do
     context 'failure' do
       let(:start_time) { Time.new(2025, 1, 1, 12, 0, 0) }
       let!(:sleep_record) { create(:sleep_record, user: user, start_time: start_time, end_time: nil) }
-
-      after do
-        sleep_record.destroy
-      end
 
       context 'when user id is invalid' do
         it 'raises an error' do
@@ -54,6 +42,12 @@ RSpec.describe SleepRecordService::Update, type: :service do
       context 'when sleep record is not found' do
         it 'raises an error' do
           expect { SleepRecordService.update(user.id, nil, { end_time: end_time }) }.to raise_error(StandardError)
+        end
+      end
+
+      context 'when sleep record is already ended' do
+        it 'raises an error' do
+          expect { SleepRecordService.update(user.id, sleep_record, { end_time: end_time }) }.to raise_error(StandardError)
         end
       end
     end

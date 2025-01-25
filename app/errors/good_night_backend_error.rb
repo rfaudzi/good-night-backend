@@ -34,4 +34,10 @@ module GoodNightBackendError
       super(title, message, code)
     end
   end
+
+  class NotFoundError < GoodNightBackendError::Base
+    def initialize(title = I18n.t('errors.not_found.title'), message = I18n.t('errors.not_found.message'), code = 10_005)
+      super(title, message, code)
+    end
+  end
 end

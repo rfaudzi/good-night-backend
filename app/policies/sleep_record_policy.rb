@@ -9,6 +9,10 @@ class SleepRecordPolicy < ApplicationPolicy
     user.present?
   end
 
+  def update?
+    user.present? && record.user_id == user[:user_id]
+  end
+
   class Scope < ApplicationPolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
     # def resolve

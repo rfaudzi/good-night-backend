@@ -90,10 +90,6 @@ RSpec.describe 'Sleep Records API', type: :request do
         let(:Authorization) { "Bearer #{token}" }
         let(:sleep_record) { { start_time: '2025-01-01T12:00:00Z' } }
 
-        before do
-          allow(SleepRecordService).to receive(:create).and_raise(GoodNightBackendError::UnprocessableEntityError.new)
-        end
-
         examples 'application/json' => {
           errors: [
             {
@@ -141,4 +137,177 @@ RSpec.describe 'Sleep Records API', type: :request do
     end
   end
 
+  path '/api/v1/sleep_records/{id}' do
+    patch 'Update a sleep record' do
+      tags 'Sleep Records'
+      consumes 'application/json'
+      produces 'application/json'
+      security [bearer_auth: []]
+
+      parameter name: :Authorization, in: :header, type: :string, required: true, description: 'Bearer <token>'
+      parameter name: :id, in: :path, type: :integer, required: true, description: 'Sleep record ID'
+      parameter name: :sleep_record, in: :body, schema: {
+        type: :object,
+        properties: {
+          end_time: { type: :string, format: :date_time },
+        },
+        required: ['end_time'],
+        example: {
+          end_time: '2025-01-01T12:00:00Z'
+        }
+      }
+
+      response '200', 'Updated' do
+        let(:user) { create(:user) }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+        let(:sleep_record_data) { create(:sleep_record, user: user, start_time: Time.current, end_time: nil, duration: 0) }
+        let(:sleep_record) { { end_time: (Time.current + 1.hour).iso8601 } }
+        let(:id) { sleep_record_data.id }
+
+        before do
+          allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
+        end
+
+        examples 'application/json' => {
+          data: {
+            id: 1,
+            type: "sleep_record",
+            attributes: {
+              id: 1,
+              user_id: 1,
+              start_time: Time.current.iso8601,
+              end_time: (Time.current + 1.hour).iso8601,
+              duration: 60,
+              created_at: Time.current.iso8601,
+              updated_at: Time.current.iso8601
+            }
+          },
+          meta: {
+            http_status: 200,
+              message: I18n.t('sleep_record.updated_successfully')
+          }
+        }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['data']['attributes']['end_time']).to be_present
+          expect(data['data']['attributes']['duration']).to be_present
+        end
+      end
+
+      response '422', 'Unprocessable entity' do
+        let(:user) { create(:user) }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+        let(:sleep_record_data) { create(:sleep_record, user: user, start_time: Time.current, end_time: nil, duration: 0) }
+        let(:sleep_record) { { id: sleep_record_data.id, end_time: (Time.current + 1.hour).iso8601 } }
+        let(:id) { sleep_record_data.id }
+
+        before do
+          allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
+          allow(SleepRecordService).to receive(:update).and_raise(GoodNightBackendError::UnprocessableEntityError.new)
+        end
+        
+        examples 'application/json' => {
+          errors: [
+            {
+              title: I18n.t('errors.unprocessable_entity.title'),
+              detail: I18n.t('errors.unprocessable_entity.message'),
+              code: "100",
+              status: "422"
+            }
+          ]
+        }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['errors'][0]['detail']).to include(I18n.t('errors.unprocessable_entity.message'))
+        end
+      end
+
+      response '404', 'Not found' do
+        let(:user) { create(:user) }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+        let(:sleep_record) { { id: 999, end_time: (Time.current + 1.hour).iso8601 } }
+        let(:id) { 999 }
+
+        before do
+          allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
+          allow(SleepRecordService).to receive(:update).and_raise(GoodNightBackendError::NotFoundError.new)
+        end
+
+        examples 'application/json' => {
+          errors: [
+            {
+              title: I18n.t('errors.not_found.title'),
+              detail: I18n.t('errors.not_found.message'),
+              code: "100",
+              status: "404"
+            }
+          ]
+        }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['errors'][0]['title']).to include(I18n.t('errors.not_found.title'))
+        end
+      end
+
+      response '401', 'Unauthorized' do
+        let(:user) { create(:user) }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+        let(:sleep_record_data) { create(:sleep_record, user: user, start_time: Time.current, end_time: nil, duration: 0) }
+        let(:sleep_record) { { id: sleep_record_data.id, end_time: (Time.current + 1.hour).iso8601 } }
+        let(:id) { sleep_record_data.id }
+
+        examples 'application/json' => {
+          errors: [
+            {
+              title: I18n.t('errors.unauthorized.title'),
+              detail: I18n.t('errors.unauthorized.message'),
+              code: "100",
+              status: "401"
+            }
+          ]
+        }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['errors'][0]['title']).to include(I18n.t('errors.unauthorized.title'))
+        end
+      end
+
+      response '403', 'Forbidden' do
+        let(:user) { create(:user) }
+        let(:other_user) { create(:user) }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+        let(:sleep_record_data) { create(:sleep_record, user: other_user, start_time: Time.current, end_time: nil, duration: 0) }
+        let(:sleep_record) { { id: sleep_record_data.id, end_time: (Time.current + 1.hour).iso8601 } }
+        let(:id) { sleep_record_data.id }
+        before do
+          allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
+        end
+
+        examples 'application/json' => {
+          errors: [
+            {
+              title: I18n.t('errors.forbidden.title'),
+              detail: I18n.t('errors.forbidden.message'),
+              code: "100",
+              status: "403"
+            }
+          ]
+        }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['errors'][0]['title']).to include(I18n.t('errors.forbidden.title'))
+        end
+      end
+    end
+  end
 end 

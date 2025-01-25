@@ -42,3 +42,9 @@ en:
     forbidden:
       title: "Forbidden"
       message: "You do not have permission to access this resource"
+    internal_server_error:
+      title: "Internal server error"
+      message: "An internal server error occurred"
+    not_found:
+      title: "Not found"
+      message: "The requested resource was not found"
