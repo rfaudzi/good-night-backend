@@ -12,14 +12,6 @@ RSpec.configure do |config|
         description: 'API documentation for Good Night App'
       },
       components: {
-        schemas: {
-          error: {
-            type: 'object',
-            properties: {
-              message: { type: 'string' }
-            }
-          }
-        },
         securitySchemes: {
           bearer_auth: {
             type: :http,

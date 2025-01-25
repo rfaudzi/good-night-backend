@@ -31,6 +31,7 @@ en:
   hello: "Hello world"
   sleep_record:
     created_successfully: "Sleep record created successfully"
+    updated_successfully: "Sleep record updated successfully"
   errors:
     unauthorized:
       title: "Invalid token"
