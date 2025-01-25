@@ -29,3 +29,15 @@
 
 en:
   hello: "Hello world"
+  sleep_record:
+    created_successfully: "Sleep record created successfully"
+  errors:
+    unauthorized:
+      title: "Invalid token"
+      message: "The provided Bearer token is invalid or expired."
+    unprocessable_entity:
+      title: "Unprocessable entity" 
+      message: "The request was well-formed but was unable to be followed due to semantic errors."
+    forbidden:
+      title: "Forbidden"
+      message: "You do not have permission to access this resource"
