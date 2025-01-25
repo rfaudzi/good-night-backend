@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
       render_error(GoodNightBackendError::ForbiddenError.new, GoodNightBackend::Constants::STATUS_CODE[:forbidden])
     else
       raise exception if Rails.env.development?
-      binding.pry
+
       render_error(GoodNightBackendError::InternalServerError.new, GoodNightBackend::Constants::STATUS_CODE[:internal_server_error])
     end
   end
