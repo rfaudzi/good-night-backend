@@ -63,11 +63,11 @@
                         "attributes": {
                           "id": 1,
                           "user_id": 1,
-                          "start_time": "2025-01-25T20:44:32Z",
+                          "start_time": "2025-01-25T22:28:16Z",
                           "end_time": null,
                           "duration": 0,
-                          "created_at": "2025-01-25T20:44:32Z",
-                          "updated_at": "2025-01-25T20:44:32Z"
+                          "created_at": "2025-01-25T22:28:16Z",
+                          "updated_at": "2025-01-25T22:28:16Z"
                         }
                       },
                       "meta": {
@@ -165,9 +165,207 @@
             }
           }
         }
+      },
+      "get": {
+        "summary": "List sleep records",
+        "tags": [
+          "Sleep Records"
+        ],
+        "security": [
+          {
+            "bearer_auth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Bearer <token>",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Limit",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Offset",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "description": "Start date",
+            "schema": {
+              "type": "date_time"
+            }
+          },
+          {
+            "name": "start_date_condition",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "less_than",
+                "greater_than",
+                "equal",
+                "not_equal"
+              ],
+              "default": "greater_than"
+            },
+            "description": "Start date condition"
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "start_time",
+                "duration"
+              ],
+              "default": "start_time"
+            },
+            "description": "Order by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "desc",
+                "asc"
+              ],
+              "default": "desc"
+            },
+            "description": "Order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listed",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": 1,
+                          "type": "sleep_record",
+                          "attributes": {
+                            "id": 1,
+                            "user_id": 1,
+                            "start_time": "2025-01-24T22:28:16Z",
+                            "end_time": null,
+                            "duration": 0,
+                            "created_at": "2025-01-25T22:28:16Z",
+                            "updated_at": "2025-01-25T22:28:16Z"
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "http_status": 200,
+                        "message": "Translation missing: en.sleep_record.listed_successfully",
+                        "limit": 10,
+                        "offset": 0,
+                        "total_count": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Invalid token",
+                          "detail": "The provided Bearer token is invalid or expired.",
+                          "code": "100",
+                          "status": "401"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Forbidden",
+                          "detail": "You do not have permission to access this resource",
+                          "code": "100",
+                          "status": "403"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Internal server error",
+                          "detail": "An internal server error occurred",
+                          "code": "100",
+                          "status": "500"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
-    "/api/v1/sleep_records/:id": {
+    "/api/v1/sleep_records/{id}": {
       "patch": {
         "summary": "Update a sleep record",
         "tags": [
@@ -189,6 +387,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Sleep record ID",
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "responses": {
@@ -205,11 +412,11 @@
                         "attributes": {
                           "id": 1,
                           "user_id": 1,
-                          "start_time": "2025-01-25T20:44:32Z",
-                          "end_time": "2025-01-25T21:44:32Z",
+                          "start_time": "2025-01-25T22:28:16Z",
+                          "end_time": "2025-01-25T23:28:16Z",
                           "duration": 60,
-                          "created_at": "2025-01-25T20:44:32Z",
-                          "updated_at": "2025-01-25T20:44:32Z"
+                          "created_at": "2025-01-25T22:28:16Z",
+                          "updated_at": "2025-01-25T22:28:16Z"
                         }
                       },
                       "meta": {
@@ -235,6 +442,27 @@
                           "detail": "The request was well-formed but was unable to be followed due to semantic errors.",
                           "code": "100",
                           "status": "422"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Not found",
+                          "detail": "The requested resource was not found",
+                          "code": "100",
+                          "status": "404"
                         }
                       ]
                     }
