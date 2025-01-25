@@ -12,6 +12,10 @@ RSpec.describe SleepRecord, type: :model do
   describe 'end_time validation' do
     let(:user) { create(:user) }
 
+    after do
+      user.destroy
+    end
+
     context 'when end_time is before start_time' do
       let(:sleep_record) do
         build(:sleep_record,
