@@ -40,4 +40,10 @@ module GoodNightBackendError
       super(title, message, code)
     end
   end
+
+  class BadRequestError < GoodNightBackendError::Base
+    def initialize(title = I18n.t('errors.bad_request.title'), message = I18n.t('errors.bad_request.message'), code = 10_006)
+      super(title, message, code)
+    end
+  end
 end

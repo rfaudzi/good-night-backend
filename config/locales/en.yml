@@ -48,3 +48,6 @@ en:
     not_found:
       title: "Not found"
       message: "The requested resource was not found"
+    bad_request:
+      title: "Bad request"
+      message: "The request was invalid"

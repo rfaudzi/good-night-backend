@@ -56,8 +56,8 @@ module SleepRecordService
 
     def log_error(error)
       GoodNightBackend::Logger.error({
-        tags: ['track_sleep', 'error'],
-        message: "Failed to track sleep record: #{error.message}",
+        tags: ['update', 'error'],
+        message: "Failed to update sleep record: #{error.message}",
         backtrace: error.backtrace.take(GoodNightBackend::Constants::MAX_BACKTRACE_LENGTH),
         user_id: user_id
       })
