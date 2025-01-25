@@ -2,7 +2,6 @@ class SleepRecord < ApplicationRecord
   belongs_to :user
   
   validates :start_time, presence: true
-  validates :end_time, presence: true
   validate :end_time_after_start_time?
   
   private
