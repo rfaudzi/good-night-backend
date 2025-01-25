@@ -1,5 +1,6 @@
 module SleepRecordService
   module_function
 
-  def track_sleep(*args); SleepRecordService::TrackSleep.new(*args).call; end
+  def create(*args); SleepRecordService::Create.new(*args).call; end
+  def update(*args); SleepRecordService::Update.new(*args).call; end
 end
