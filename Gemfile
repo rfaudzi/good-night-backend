@@ -37,6 +37,7 @@ gem "bootsnap", require: false
 
 gem 'dotenv-rails'
 gem 'request_store'
+gem 'jwt'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -45,6 +46,13 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'shoulda-matchers'
+  gem 'rswag-api'
+  gem 'rswag-ui'
+  gem 'rswag-specs'
+  gem 'pry'
+  gem 'pry-rails'
+  gem 'pry-doc'
+  gem 'pry-byebug'
 end
 
 group :development do
