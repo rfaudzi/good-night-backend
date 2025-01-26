@@ -35,7 +35,8 @@ module UserService
         order_by: @order_by,
         order: @order,
         limit: @limit,
-        offset: @offset
+        offset: @offset,
+        closed_records: true
       }
 
       SleepRecordService.list(sleep_record_params)

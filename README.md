@@ -5,9 +5,9 @@ The "Good Night" application is designed to help users monitor their sleep patte
 
 * Ruby 3.2.2
 * Rails 7.0.6
-* PostgreSQL 16.1
-* Docker 24.0.1
-* Docker Compose 2.19.1
+* PostgreSQL 15
+* Docker
+* Docker Compose
 
 ## How to run the application
 * Install RVM

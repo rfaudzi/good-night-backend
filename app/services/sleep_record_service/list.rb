@@ -20,6 +20,7 @@ module SleepRecordService
       @order_by = params[:order_by] || "start_time"
       @order = params[:order] || "desc"
       @user_ids = params[:user_ids]
+      @closed_records = params[:closed_records]
     end
 
     def call
@@ -50,6 +51,11 @@ module SleepRecordService
         condition = AVAILABLE_START_DATE_CONDITION[@start_date_condition]
         query_result = query_result.where("start_time #{condition} ?", @start_date.to_datetime.utc)
       end
+
+      if @closed_records
+        query_result = query_result.where("duration > 0")
+      end
+
       total_count = query_result.count
 
       result = query_result.order(@order_by => @order).limit(@limit).offset(@offset)
