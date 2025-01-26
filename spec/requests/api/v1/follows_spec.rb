@@ -159,4 +159,116 @@ RSpec.describe 'Follows API', type: :request do
       end 
     end
   end
+
+  path '/api/v1/follows/{following_id}' do
+    delete 'Delete a follow' do
+      tags 'Follows'
+      security [bearer_auth: []]
+      parameter name: :Authorization, in: :header, type: :string, required: true, description: 'Bearer <token>'
+      parameter name: :following_id, in: :path, type: :string, required: true, description: 'Following ID'
+      
+      response '204', 'Deleted' do
+        let(:user) { create(:user) }  
+        let(:other_user) { create(:user) }
+        let(:follow_data) { create(:follow, follower_id: user.id, following_id: other_user.id) }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+        let(:following_id) { other_user.id }
+
+        before do
+          follow_data
+          allow(JsonWebToken).to receive(:decode).and_return({user_id: user.id, exp: Time.current.to_i + 1000})
+        end
+
+        run_test! do |response|
+          expect(response.status).to eq(204)
+        end
+      end
+
+      response '404', 'Not found' do
+        let(:user) { create(:user) }
+        let(:other_user) { create(:user) }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" } 
+        let(:following_id) { other_user.id}
+        
+        before do
+          allow(JsonWebToken).to receive(:decode).and_return({user_id: user.id, exp: Time.current.to_i + 1000})
+        end
+
+        examples 'application/json' => {
+          errors: [
+            {
+              title: I18n.t('errors.not_found.title'),
+              detail: I18n.t('errors.not_found.message'),
+              code: 100,
+              status: 404
+            }
+          ]
+        }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['errors'][0]['title']).to eq(I18n.t('errors.not_found.title'))
+          expect(data['errors'][0]['detail']).to eq(I18n.t('errors.not_found.message'))
+          expect(data['errors'][0]['status']).to eq(404)
+        end
+      end
+
+      response '401', 'Unauthorized' do
+        let(:following_id) { '1' }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+
+        examples 'application/json' => {
+          errors: [
+            {
+              title: I18n.t('errors.unauthorized.title'),
+              detail: I18n.t('errors.unauthorized.message'),
+              code: 100,
+              status: 401
+            }
+          ]
+        }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['errors'][0]['title']).to eq(I18n.t('errors.unauthorized.title'))
+          expect(data['errors'][0]['detail']).to eq(I18n.t('errors.unauthorized.message'))
+          expect(data['errors'][0]['status']).to eq(401)
+        end
+      end
+
+      response '403', 'Forbidden' do
+        let(:user) { create(:user) }
+        let(:other_user) { create(:user) }
+        let(:token) { "1234567890" }
+        let(:Authorization) { "Bearer #{token}" }
+        let(:following_id) { other_user.id }
+
+        before do
+          allow(JsonWebToken).to receive(:decode).and_return({user_id: user.id, exp: Time.current.to_i + 1000})
+          allow_any_instance_of(FollowPolicy).to receive(:delete?).and_return(false)
+        end
+
+        examples 'application/json' => {
+          errors: [
+            {
+              title: I18n.t('errors.forbidden.title'),
+              detail: I18n.t('errors.forbidden.message'),
+              code: 100,
+              status: 403
+            }
+          ]
+        }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['errors'][0]['title']).to eq(I18n.t('errors.forbidden.title'))
+          expect(data['errors'][0]['detail']).to eq(I18n.t('errors.forbidden.message'))
+          expect(data['errors'][0]['status']).to eq(403)
+        end
+      end
+    end
+  end
 end

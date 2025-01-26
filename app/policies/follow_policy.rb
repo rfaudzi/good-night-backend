@@ -9,6 +9,10 @@ class FollowPolicy < ApplicationPolicy
     user.present?
   end
 
+  def delete?
+    user.present?
+  end
+
   class Scope < ApplicationPolicy::Scope
     # NOTE: Be explicit about which records you allow access to!
     # def resolve

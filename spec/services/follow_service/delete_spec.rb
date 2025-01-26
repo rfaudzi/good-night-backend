@@ -6,7 +6,14 @@ RSpec.describe FollowService::Delete, type: :service do
 
   describe '#call' do
     context 'success' do
+      let(:follow_data) { create(:follow, follower_id: user.id, following_id: following_user.id) }
+
+      before do
+        follow_data
+      end
+
       context 'when params are valid' do
+        
         it 'deletes the follow' do
           expect(FollowService.delete(user.id, following_user.id)).to be_truthy
         end
@@ -22,7 +29,7 @@ RSpec.describe FollowService::Delete, type: :service do
     context 'failure' do
       context 'when user id is invalid' do
         it 'raises an error' do
-          expect { FollowService.delete(nil, following_user.id) }.to raise_error(StandardError)
+          expect { FollowService.delete(nil, following_user.id) }.to raise_error(GoodNightBackendError::BadRequestError)
         end
       end
 
@@ -33,19 +40,25 @@ RSpec.describe FollowService::Delete, type: :service do
         end
 
         it 'raises an error' do
-          expect { FollowService.delete(user.id, following_user.id) }.to raise_error(StandardError)
+          expect { FollowService.delete(user.id, following_user.id) }.to raise_error(GoodNightBackendError::UnprocessableEntityError)
         end
       end
 
       context 'when following user id is invalid' do
         it 'raises an error' do
-          expect { FollowService.delete(user.id, nil) }.to raise_error(StandardError)
+          expect { FollowService.delete(user.id, nil) }.to raise_error(GoodNightBackendError::BadRequestError)
         end
       end
 
       context 'when following user is not found' do
         it 'raises an error' do
-          expect { FollowService.delete(user.id, 'not_a_user') }.to raise_error(StandardError)
+          expect { FollowService.delete(user.id, 'not_a_user') }.to raise_error(GoodNightBackendError::UnprocessableEntityError)
+        end
+      end
+
+      context 'when user id and following user id are the same' do
+        it 'raises an error' do
+          expect { FollowService.delete(user.id, user.id) }.to raise_error(GoodNightBackendError::BadRequestError)
         end
       end
     end

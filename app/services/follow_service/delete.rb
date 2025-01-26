@@ -16,8 +16,9 @@ module FollowService
     private
 
     def validate_params
-      raise GoodNightBackend::Errors::BadRequest.new if @following_id.blank? || @user_id.blank?
-      raise GoodNightBackend::Errors::UnprocessableEntity.new if @following_id && following_user.blank? || @user_id && user.blank?
+      raise GoodNightBackendError::BadRequestError.new if @following_id.blank? || @user_id.blank? || @user_id == @following_id
+      raise GoodNightBackendError::UnprocessableEntityError.new if @following_id && following_user.blank? || @user_id && user.blank?
+      raise GoodNightBackendError::NotFoundError.new if current_record.blank?
     end
 
     def user

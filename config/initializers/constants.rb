@@ -9,7 +9,8 @@ module GoodNightBackend
       forbidden: 403,
       not_found: 404,
       unprocessable_entity: 422,
-      internal_server_error: 500
+      internal_server_error: 500,
+      deleted: 204
     }
   end
 end

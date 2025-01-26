@@ -9,6 +9,11 @@ class Api::V1::FollowsController < ApplicationController
            meta: build_meta(I18n.t('follow.created_successfully'), GoodNightBackend::Constants::STATUS_CODE[:created])
   end
 
+  def delete
+    follow = FollowService.delete(current_user[:user_id], delete_params)
+    render json: {}, adapter: :json_api, status: :no_content
+  end
+
   private
 
   def authorize_policy
@@ -17,6 +22,10 @@ class Api::V1::FollowsController < ApplicationController
 
   def create_params
     params.require(:follow).permit(:following_id)
+  end
+
+  def delete_params
+    params.require(:following_id)
   end
 
   def build_meta(message, status_code)

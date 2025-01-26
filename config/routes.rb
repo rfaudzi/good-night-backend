@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :sleep_records, only: [:create, :update, :index]
-      resources :follows, only: [:create]
+      resources :follows, only: [:create] do
+        delete "/:following_id", to: "follows#delete", on: :collection
+      end
     end
   end
 
