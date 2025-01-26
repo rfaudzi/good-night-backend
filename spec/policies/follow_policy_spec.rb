@@ -12,4 +12,3 @@ RSpec.describe FollowPolicy, type: :policy do
     end
   end
 end
-  

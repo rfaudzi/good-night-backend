@@ -34,14 +34,18 @@ module FollowService
     end
 
     def create_follow
+      follow_object = nil
       if current_record.present?
         current_record.update!(deleted_at: nil)
+        follow_object = current_record
       else
-        Follow.create!(
+        follow_object = Follow.create!(
           follower_id: @user_id,
           following_id: @following_id
         )
       end
+
+      follow_object
     end
 
     def log_error(error)
