@@ -13,6 +13,9 @@ Rails.application.routes.draw do
       resources :follows, only: [:create] do
         delete "/:following_id", to: "follows#delete", on: :collection
       end
+      resources :users, only: [] do
+        get "/following/sleep_records", to: "users#list_sleep_records_following", on: :collection
+      end
     end
   end
 

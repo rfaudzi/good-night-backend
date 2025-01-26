@@ -1,5 +1,5 @@
 module UserService
-  class ListSleepRecordFollowing
+  class ListSleepRecordsFollowing
     attr_reader :user_id, :params, :limit, :offset
     def initialize(user_id, params)
       @user_id = user_id
@@ -39,14 +39,6 @@ module UserService
       }
 
       SleepRecordService.list(sleep_record_params)
-    rescue StandardError => e
-      log_error(e)
-
-      [[], {
-        total_count: 0,
-        limit: @limit.to_i,
-        offset: @offset.to_i
-      }]
     end
 
     def following_users

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe UserService::ListSleepRecordFollowing, type: :service do
+RSpec.describe UserService::ListSleepRecordsFollowing, type: :service do
   let(:user) { create(:user) }
   let(:following_user) { create(:user) }
   let(:following) { create(:follow, follower_id: user.id, following_id: following_user.id) }
@@ -30,7 +30,7 @@ RSpec.describe UserService::ListSleepRecordFollowing, type: :service do
       end
 
       it 'returns a list of sleep records' do
-        result, meta = UserService.list_sleep_record_following(user.id,params)
+        result, meta = UserService.list_sleep_records_following(user.id,params)
         expect(result).to be_a(Array)
         expect(meta[:total_count]).to eq(9)
         expect(meta[:limit]).to eq(10)
@@ -41,7 +41,7 @@ RSpec.describe UserService::ListSleepRecordFollowing, type: :service do
     context 'failure' do
       context 'when user not found' do
         it 'raises an error' do
-          expect { UserService.list_sleep_record_following(user.id + 100, params) }.to raise_error(GoodNightBackendError::UnprocessableEntityError)
+          expect { UserService.list_sleep_records_following(user.id + 100, params) }.to raise_error(GoodNightBackendError::UnprocessableEntityError)
         end
       end
     end
