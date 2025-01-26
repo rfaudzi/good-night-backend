@@ -25,6 +25,145 @@
     }
   ],
   "paths": {
+    "/api/v1/follows": {
+      "post": {
+        "summary": "Create a follow",
+        "tags": [
+          "Follows"
+        ],
+        "security": [
+          {
+            "bearer_auth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Bearer <token>",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "data": {
+                        "id": "1",
+                        "type": "follow",
+                        "attributes": {
+                          "follower_id": "1",
+                          "following_id": "1",
+                          "created_at": "2025-01-01T12:00:00Z",
+                          "updated_at": "2025-01-01T12:00:00Z"
+                        }
+                      },
+                      "meta": {
+                        "http_status": 201,
+                        "message": "Follow created successfully"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Invalid token",
+                          "detail": "The provided Bearer token is invalid or expired.",
+                          "code": "100",
+                          "status": "401"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Bad request",
+                          "detail": "The request was invalid",
+                          "code": "100",
+                          "status": "400"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable entity",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Unprocessable entity",
+                          "detail": "The request was well-formed but was unable to be followed due to semantic errors.",
+                          "code": "100",
+                          "status": "422"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "following_id": {
+                    "type": "string",
+                    "required": true
+                  }
+                },
+                "example": {
+                  "following_id": "623"
+                },
+                "required": [
+                  "following_id"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/sleep_records": {
       "post": {
         "summary": "Create a sleep record",
@@ -63,11 +202,11 @@
                         "attributes": {
                           "id": 1,
                           "user_id": 1,
-                          "start_time": "2025-01-25T22:28:16Z",
+                          "start_time": "2025-01-26T05:47:38Z",
                           "end_time": null,
                           "duration": 0,
-                          "created_at": "2025-01-25T22:28:16Z",
-                          "updated_at": "2025-01-25T22:28:16Z"
+                          "created_at": "2025-01-26T05:47:38Z",
+                          "updated_at": "2025-01-26T05:47:38Z"
                         }
                       },
                       "meta": {
@@ -278,21 +417,42 @@
                           "attributes": {
                             "id": 1,
                             "user_id": 1,
-                            "start_time": "2025-01-24T22:28:16Z",
+                            "start_time": "2025-01-25T05:47:38Z",
                             "end_time": null,
                             "duration": 0,
-                            "created_at": "2025-01-25T22:28:16Z",
-                            "updated_at": "2025-01-25T22:28:16Z"
+                            "created_at": "2025-01-26T05:47:38Z",
+                            "updated_at": "2025-01-26T05:47:38Z"
                           }
                         }
                       ],
                       "meta": {
                         "http_status": 200,
-                        "message": "Translation missing: en.sleep_record.listed_successfully",
+                        "message": "Sleep records listed successfully",
                         "limit": 10,
                         "offset": 0,
                         "total_count": 1
                       }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Bad request",
+                          "detail": "The request was invalid",
+                          "code": "100",
+                          "status": "400"
+                        }
+                      ]
                     }
                   }
                 }
@@ -412,11 +572,11 @@
                         "attributes": {
                           "id": 1,
                           "user_id": 1,
-                          "start_time": "2025-01-25T22:28:16Z",
-                          "end_time": "2025-01-25T23:28:16Z",
+                          "start_time": "2025-01-26T05:47:38Z",
+                          "end_time": "2025-01-26T06:47:38Z",
                           "duration": 60,
-                          "created_at": "2025-01-25T22:28:16Z",
-                          "updated_at": "2025-01-25T22:28:16Z"
+                          "created_at": "2025-01-26T05:47:38Z",
+                          "updated_at": "2025-01-26T05:47:38Z"
                         }
                       },
                       "meta": {
