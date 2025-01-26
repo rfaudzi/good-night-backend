@@ -27,15 +27,19 @@ RSpec.describe SleepRecordService::List, type: :service do
           expect(result[1][:offset]).to eq(0)
         end
       end
+
+      context 'when user_ids is not present' do
+        it 'returns a list of sleep records' do
+          result = SleepRecordService.list(params)
+          expect(result[0]).to be_a(Array)
+          expect(result[1][:total_count]).to eq(0)
+          expect(result[1][:limit]).to eq(10)
+          expect(result[1][:offset]).to eq(0)
+        end
+      end
     end
 
     context 'failure' do
-      context 'when user_ids is not present' do
-        it 'raises an error' do
-          expect { SleepRecordService::List.new(user_ids: nil).call }.to raise_error(StandardError)
-        end
-      end
-
       context 'when start_date_condition is not valid' do
         it 'raises an error' do
           expect { SleepRecordService::List.new(user_ids: [user.id], start_date_condition: "invalid").call }.to raise_error(StandardError)

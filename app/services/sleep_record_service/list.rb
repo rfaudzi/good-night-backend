@@ -36,7 +36,6 @@ module SleepRecordService
       title = I18n.t('errors.bad_request.title')
       message = I18n.t('errors.bad_request.message')
 
-      raise GoodNightBackendError::BadRequestError.new(title, message + ": user_ids is required") unless @user_ids.present?
       raise GoodNightBackendError::BadRequestError.new(title, message + ": start_date_condition not available") if @start_date_condition && !AVAILABLE_START_DATE_CONDITION.include?(@start_date_condition)
       raise GoodNightBackendError::BadRequestError.new(title, message + ": order_by not available") if @order_by && !AVAILABLE_ORDER_BY.include?(@order_by)
       raise GoodNightBackendError::BadRequestError.new(title, message + ": order not available") if @order && !AVAILABLE_ORDER.include?(@order)
@@ -44,6 +43,7 @@ module SleepRecordService
     end
 
     def sleep_records
+      return [[], build_meta(0)] if @user_ids.blank?
       query_result = SleepRecord.where(user_id: @user_ids)
 
       if @start_date.present?
