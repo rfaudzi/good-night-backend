@@ -62,14 +62,14 @@
                         "type": "follow",
                         "attributes": {
                           "follower_id": "1",
-                          "following_id": "1",
+                          "following_id": "2",
                           "created_at": "2025-01-01T12:00:00Z",
                           "updated_at": "2025-01-01T12:00:00Z"
                         }
                       },
                       "meta": {
                         "http_status": 201,
-                        "message": "Follow created successfully"
+                        "message": "Resource created successfully"
                       }
                     }
                   }
@@ -109,8 +109,8 @@
                         {
                           "title": "Bad request",
                           "detail": "The request was invalid",
-                          "code": "100",
-                          "status": "400"
+                          "code": 100,
+                          "status": 400
                         }
                       ]
                     }
@@ -130,8 +130,8 @@
                         {
                           "title": "Unprocessable entity",
                           "detail": "The request was well-formed but was unable to be followed due to semantic errors.",
-                          "code": "100",
-                          "status": "422"
+                          "code": 100,
+                          "status": 422
                         }
                       ]
                     }
@@ -153,11 +153,128 @@
                   }
                 },
                 "example": {
-                  "following_id": "623"
+                  "following_id": "2"
                 },
                 "required": [
                   "following_id"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/follows/{following_id}": {
+      "delete": {
+        "summary": "Delete a follow",
+        "tags": [
+          "Follows"
+        ],
+        "security": [
+          {
+            "bearer_auth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Bearer <token>",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "following_id",
+            "in": "path",
+            "required": true,
+            "description": "Following ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "meta": {
+                        "http_status": 204,
+                        "message": "Resource deleted successfully"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Not found",
+                          "detail": "The requested resource was not found",
+                          "code": 100,
+                          "status": 404
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Invalid token",
+                          "detail": "The provided Bearer token is invalid or expired.",
+                          "code": 100,
+                          "status": 401
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Forbidden",
+                          "detail": "You do not have permission to access this resource",
+                          "code": 100,
+                          "status": 403
+                        }
+                      ]
+                    }
+                  }
+                }
               }
             }
           }
@@ -202,11 +319,11 @@
                         "attributes": {
                           "id": 1,
                           "user_id": 1,
-                          "start_time": "2025-01-26T05:47:38Z",
+                          "start_time": "2025-01-26T06:51:35Z",
                           "end_time": null,
                           "duration": 0,
-                          "created_at": "2025-01-26T05:47:38Z",
-                          "updated_at": "2025-01-26T05:47:38Z"
+                          "created_at": "2025-01-26T06:51:35Z",
+                          "updated_at": "2025-01-26T06:51:35Z"
                         }
                       },
                       "meta": {
@@ -417,11 +534,11 @@
                           "attributes": {
                             "id": 1,
                             "user_id": 1,
-                            "start_time": "2025-01-25T05:47:38Z",
+                            "start_time": "2025-01-25T06:51:35Z",
                             "end_time": null,
                             "duration": 0,
-                            "created_at": "2025-01-26T05:47:38Z",
-                            "updated_at": "2025-01-26T05:47:38Z"
+                            "created_at": "2025-01-26T06:51:35Z",
+                            "updated_at": "2025-01-26T06:51:35Z"
                           }
                         }
                       ],
@@ -572,11 +689,11 @@
                         "attributes": {
                           "id": 1,
                           "user_id": 1,
-                          "start_time": "2025-01-26T05:47:38Z",
-                          "end_time": "2025-01-26T06:47:38Z",
+                          "start_time": "2025-01-26T06:51:35Z",
+                          "end_time": "2025-01-26T07:51:35Z",
                           "duration": 60,
-                          "created_at": "2025-01-26T05:47:38Z",
-                          "updated_at": "2025-01-26T05:47:38Z"
+                          "created_at": "2025-01-26T06:51:35Z",
+                          "updated_at": "2025-01-26T06:51:35Z"
                         }
                       },
                       "meta": {

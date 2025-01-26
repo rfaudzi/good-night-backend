@@ -30,7 +30,8 @@
 en:
   hello: "Hello world"
   follow:
-    created_successfully: "Follow created successfully"
+    created_successfully: "Resource created successfully"
+    deleted_successfully: "Resource deleted successfully"
   sleep_record:
     created_successfully: "Sleep record created successfully"
     updated_successfully: "Sleep record updated successfully"
