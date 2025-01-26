@@ -22,11 +22,11 @@ rvm install ruby-3.2.2
 * clone this repository
 ```
 git clone https://github.com/rfaudzi/good-night-backend.git
-cd goodnight-backend
+cd good-night-backend
 ```
 * Create gemset
 ```
-rvm use 3.2.2@goodnight-backend --create
+rvm use 3.2.2@good-night-backend --create
 ```
 * Setup Bundler
 ```
@@ -48,6 +48,10 @@ bundle exec rake db:seed
 ```
 puma -C config/puma.rb
 ```
+your application is running at `http://localhost:3000`.
+
+swagger is available at `http://localhost:3000/api-docs`
+
 * generate Auth token
 
 `bundle exec rake auth:generate_token[<user_id>]`
