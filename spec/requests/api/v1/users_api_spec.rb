@@ -30,7 +30,7 @@ RSpec.describe 'Users API', type: :request do
         let(:Authorization) { "Bearer #{token}" }
         let(:limit) { 10 }
         let(:offset) { 0 }
-        let(:start_date) { (Time.current).iso8601 }
+        let(:start_date) { Time.current.strftime("%Y-%m-%d") }
         let(:start_date_condition) { "less_than" }
         let(:order_by) { "duration" }
         let(:order) { "desc" }
