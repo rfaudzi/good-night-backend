@@ -305,11 +305,11 @@
                         "attributes": {
                           "id": 1,
                           "user_id": 1,
-                          "start_time": "2025-01-26T07:35:38Z",
+                          "start_time": "2025-01-26T08:20:37Z",
                           "end_time": null,
                           "duration": 0,
-                          "created_at": "2025-01-26T07:35:38Z",
-                          "updated_at": "2025-01-26T07:35:38Z"
+                          "created_at": "2025-01-26T08:20:37Z",
+                          "updated_at": "2025-01-26T08:20:37Z"
                         }
                       },
                       "meta": {
@@ -520,11 +520,11 @@
                           "attributes": {
                             "id": 1,
                             "user_id": 1,
-                            "start_time": "2025-01-25T07:35:38Z",
+                            "start_time": "2025-01-25T08:20:37Z",
                             "end_time": null,
                             "duration": 0,
-                            "created_at": "2025-01-26T07:35:38Z",
-                            "updated_at": "2025-01-26T07:35:38Z"
+                            "created_at": "2025-01-26T08:20:37Z",
+                            "updated_at": "2025-01-26T08:20:37Z"
                           }
                         }
                       ],
@@ -675,11 +675,11 @@
                         "attributes": {
                           "id": 1,
                           "user_id": 1,
-                          "start_time": "2025-01-26T07:35:38Z",
-                          "end_time": "2025-01-26T08:35:38Z",
+                          "start_time": "2025-01-26T08:20:37Z",
+                          "end_time": "2025-01-26T09:20:37Z",
                           "duration": 60,
-                          "created_at": "2025-01-26T07:35:38Z",
-                          "updated_at": "2025-01-26T07:35:38Z"
+                          "created_at": "2025-01-26T08:20:37Z",
+                          "updated_at": "2025-01-26T08:20:37Z"
                         }
                       },
                       "meta": {
@@ -793,6 +793,206 @@
                 ],
                 "example": {
                   "end_time": "2025-01-01T12:00:00Z"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/following/sleep_records": {
+      "get": {
+        "summary": "Get a list of sleep records of following users",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearer_auth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "description": "Bearer <token>",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Limit",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Offset",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "description": "Start date",
+            "schema": {
+              "type": "date_time"
+            }
+          },
+          {
+            "name": "start_date_condition",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "less_than",
+                "greater_than",
+                "equal",
+                "not_equal"
+              ],
+              "default": "greater_than"
+            },
+            "description": "Start date condition"
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "start_time",
+                "duration"
+              ],
+              "default": "start_time"
+            },
+            "description": "Order by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "desc",
+                "asc"
+              ],
+              "default": "desc"
+            },
+            "description": "Order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listed",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": 1,
+                          "type": "sleep_record",
+                          "attributes": {
+                            "id": 1,
+                            "user_id": 1,
+                            "start_time": "2025-01-25T08:20:37Z",
+                            "end_time": null,
+                            "duration": 0,
+                            "created_at": "2025-01-26T08:20:37Z",
+                            "updated_at": "2025-01-26T08:20:37Z"
+                          }
+                        }
+                      ],
+                      "meta": {
+                        "http_status": 200,
+                        "message": "Sleep records listed successfully",
+                        "limit": 10,
+                        "offset": 0,
+                        "total_count": 10
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Bad request",
+                          "detail": "The request was invalid",
+                          "code": "100",
+                          "status": "400"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Invalid token",
+                          "detail": "The provided Bearer token is invalid or expired.",
+                          "code": "100",
+                          "status": "401"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example_0": {
+                    "value": {
+                      "errors": [
+                        {
+                          "title": "Forbidden",
+                          "detail": "You do not have permission to access this resource",
+                          "code": "100",
+                          "status": "403"
+                        }
+                      ]
+                    }
+                  }
                 }
               }
             }
