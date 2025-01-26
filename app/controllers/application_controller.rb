@@ -30,7 +30,10 @@ class ApplicationController < ActionController::API
     pattern = /^Bearer /
     token   = token.gsub(pattern, '') if token.match(pattern)
 
-    JsonWebToken.decode(token) || {}
+    decoded_token = JsonWebToken.decode(token)
+    raise GoodNightBackendError::UnauthorizedError.new if decoded_token[:exp] < Time.current.to_i
+    
+    decoded_token || {}
   rescue
     {}
   end

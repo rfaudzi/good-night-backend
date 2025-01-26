@@ -21,7 +21,7 @@ rvm install ruby-3.2.2
 ```
 * clone this repository
 ```
-git clone git@github.com:rfaudzi/good-night-backend.git
+git clone https://github.com/rfaudzi/good-night-backend.git
 cd goodnight-backend
 ```
 * Create gemset

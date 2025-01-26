@@ -18,11 +18,10 @@ namespace :auth do
     payload = {
       user_id: user.id,
       name: user.name,
-      iat: Time.now.to_i,
-      exp: 1.hour.from_now.to_i
+      iat: Time.current.to_i,
     }
 
-    token = JsonWebToken.encode(payload)
+    token = JsonWebToken.encode(payload, (Time.current + 1.hours).to_i)
     puts "Generated JWT for user #{user.id}:"
     puts token
   end
