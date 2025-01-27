@@ -11,7 +11,7 @@ class User < ApplicationRecord
       return new(data_user)
     else
       user = User.find_by(id: id)
-      REDIS.set(cache_key, user.to_json, ex: 5.minutes)
+      REDIS.set(cache_key, user.to_json, ex: 5.minutes) if user.present?
       user
     end
   end

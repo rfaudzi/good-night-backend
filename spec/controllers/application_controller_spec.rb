@@ -7,7 +7,7 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
-  let(:user) { create(:user) }
+  let!(:user) { create(:user) }
 
   describe '#current_user' do
     before do
@@ -66,7 +66,8 @@ RSpec.describe ApplicationController, type: :controller do
       let(:decoded_token) { JsonWebToken.decode(token) }
       before do
         request.headers['Authorization'] = "Bearer #{token}"
-        allow_any_instance_of(Redis).to receive(:get).and_return(decoded_token.to_json)
+        allow_any_instance_of(Redis).to receive(:get).with(token).and_return(decoded_token.to_json)
+        allow_any_instance_of(Redis).to receive(:get).with("user_data:#{user.id}").and_return(user.to_json)
       end
 
       it 'returns the current user' do
