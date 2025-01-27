@@ -38,7 +38,7 @@ class ApplicationController < ActionController::API
       REDIS.set(token, decoded_token.to_json, ex: 5.minutes)
     end
 
-    raise GoodNightBackendError::UnauthorizedError.new unless User.find_by(id: decoded_token[:user_id])
+    raise GoodNightBackendError::UnauthorizedError.new unless User.find_by_id(decoded_token[:user_id])
     raise GoodNightBackendError::UnauthorizedError.new if decoded_token[:exp] < Time.current.to_i
     
     decoded_token || {}
