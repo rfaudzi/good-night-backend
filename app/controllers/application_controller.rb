@@ -30,7 +30,15 @@ class ApplicationController < ActionController::API
     pattern = /^Bearer /
     token   = token.gsub(pattern, '') if token.match(pattern)
 
-    decoded_token = JsonWebToken.decode(token)
+    cached_token = REDIS.get(token)
+    if cached_token.present?
+      decoded_token = JSON.parse(cached_token).with_indifferent_access
+    else
+      decoded_token = JsonWebToken.decode(token)
+      REDIS.set(token, decoded_token.to_json, ex: 5.minutes)
+    end
+
+    raise GoodNightBackendError::UnauthorizedError.new unless User.find_by(id: decoded_token[:user_id])
     raise GoodNightBackendError::UnauthorizedError.new if decoded_token[:exp] < Time.current.to_i
     
     decoded_token || {}
@@ -38,8 +46,7 @@ class ApplicationController < ActionController::API
     {}
   end
 
-
-  private
+  private  
 
   def authorize_request
     raise GoodNightBackendError::UnauthorizedError.new if !current_user.present? || current_user[:exp] < Time.current.to_i

@@ -23,8 +23,8 @@ RSpec.describe SleepRecordService::List, type: :service do
         end
 
         it 'returns a list of sleep records' do
-          expect(REDIS).to receive(:get).and_return(nil)
-          expect(REDIS).to receive(:set).and_return(true)
+          expect_any_instance_of(Redis).to receive(:get).and_return(nil)
+          expect_any_instance_of(Redis).to receive(:set).and_return(true)
 
           result = SleepRecordService.list(params)
           expect(result[0]).to be_a(Array)
@@ -50,7 +50,7 @@ RSpec.describe SleepRecordService::List, type: :service do
 
       context 'when cache data is present' do
         before do
-          allow(REDIS).to receive(:get).and_return({data: sleep_records.to_a, total_count: 10}.to_json)
+          allow_any_instance_of(Redis).to receive(:get).and_return({data: sleep_records.to_a, total_count: 10}.to_json)
         end
 
         it 'returns a list of sleep records from cache' do

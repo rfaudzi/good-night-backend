@@ -40,9 +40,9 @@ RSpec.describe 'Users API', type: :request do
         before do
           following
           sleep_records
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
-          allow(REDIS).to receive(:get).and_return(nil)
-          allow(REDIS).to receive(:set).and_return(true)
         end
   
         examples 'application/json' => {
@@ -96,6 +96,8 @@ RSpec.describe 'Users API', type: :request do
         before do
           following
           sleep_records
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
         end
   
@@ -144,6 +146,8 @@ RSpec.describe 'Users API', type: :request do
         let(:Authorization) { "Bearer #{token}" }
   
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
           allow_any_instance_of(Api::V1::UsersController).to receive(:authorize_policy).and_raise(Pundit::NotAuthorizedError.new)
         end

@@ -28,9 +28,9 @@ RSpec.describe 'Sleep Records API', type: :request do
         let(:sleep_record) { { start_time: '2025-01-01T12:00:00Z' } }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
-          allow(REDIS).to receive(:set).and_return(true)
-          allow(REDIS).to receive(:get).and_return(nil)
         end
 
         examples 'application/json' => {
@@ -66,6 +66,8 @@ RSpec.describe 'Sleep Records API', type: :request do
         let(:sleep_record) { { start_time: '2025-01-01T12:00:00Z' } }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
           allow(SleepRecordService).to receive(:create).and_raise(GoodNightBackendError::UnprocessableEntityError.new)
         end
@@ -116,6 +118,8 @@ RSpec.describe 'Sleep Records API', type: :request do
         let(:sleep_record) { { start_time: '2025-01-01T12:00:00Z' } }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
           allow_any_instance_of(Api::V1::SleepRecordsController).to receive(:authorize_policy).and_raise(Pundit::NotAuthorizedError.new)
         end
@@ -168,6 +172,8 @@ RSpec.describe 'Sleep Records API', type: :request do
         let(:id) { sleep_record_data.id }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
         end
 
@@ -207,6 +213,8 @@ RSpec.describe 'Sleep Records API', type: :request do
         let(:id) { sleep_record_data.id }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
           allow(SleepRecordService).to receive(:update).and_raise(GoodNightBackendError::UnprocessableEntityError.new)
         end
@@ -236,6 +244,8 @@ RSpec.describe 'Sleep Records API', type: :request do
         let(:id) { 999 }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
           allow(SleepRecordService).to receive(:update).and_raise(GoodNightBackendError::NotFoundError.new)
         end
@@ -290,7 +300,10 @@ RSpec.describe 'Sleep Records API', type: :request do
         let(:sleep_record_data) { create(:sleep_record, user: other_user, start_time: Time.current, end_time: nil, duration: 0) }
         let(:sleep_record) { { id: sleep_record_data.id, end_time: (Time.current + 1.hour).iso8601 } }
         let(:id) { sleep_record_data.id }
+
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
         end
 
@@ -351,6 +364,8 @@ RSpec.describe 'Sleep Records API', type: :request do
 
         before do
           sleep_records
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
         end
 
@@ -402,6 +417,8 @@ RSpec.describe 'Sleep Records API', type: :request do
 
         before do
           sleep_records
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
         end
 
@@ -452,6 +469,8 @@ RSpec.describe 'Sleep Records API', type: :request do
         let(:list_sleep_records) { { user_ids: [other_user.id] } }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
           allow_any_instance_of(Api::V1::SleepRecordsController).to receive(:authorize_policy).and_raise(Pundit::NotAuthorizedError.new)
         end
@@ -480,6 +499,8 @@ RSpec.describe 'Sleep Records API', type: :request do
         let(:list_sleep_records) { { user_ids: [user.id] } }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
           allow(SleepRecordService).to receive(:list).and_raise(GoodNightBackendError::InternalServerError.new)
         end

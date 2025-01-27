@@ -27,6 +27,8 @@ RSpec.describe 'Follows API', type: :request do
         let(:follow) { { following_id: other_user.id } }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({user_id: user.id, exp: Time.current.to_i + 1000})
         end
 
@@ -106,7 +108,9 @@ RSpec.describe 'Follows API', type: :request do
         let(:follow) { { following_id: '623' } }
 
         before do
-          allow(JsonWebToken).to receive(:decode).and_return({user_id: user.id + 10, exp: Time.current.to_i + 1000})
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
+          allow(JsonWebToken).to receive(:decode).and_return({user_id: user.id, exp: Time.current.to_i + 1000})
           allow(FollowService).to receive(:create).and_raise(GoodNightBackendError::BadRequestError.new)
         end
 
@@ -136,6 +140,8 @@ RSpec.describe 'Follows API', type: :request do
         let(:follow) { { following_id: '623' } }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({user_id: user.id, exp: Time.current.to_i + 1000})
         end
 
@@ -177,6 +183,8 @@ RSpec.describe 'Follows API', type: :request do
 
         before do
           follow_data
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({user_id: user.id, exp: Time.current.to_i + 1000})
         end
 
@@ -193,6 +201,8 @@ RSpec.describe 'Follows API', type: :request do
         let(:following_id) { other_user.id}
         
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({user_id: user.id, exp: Time.current.to_i + 1000})
         end
 
@@ -247,6 +257,8 @@ RSpec.describe 'Follows API', type: :request do
         let(:following_id) { other_user.id }
 
         before do
+          allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+          allow_any_instance_of(Redis).to receive(:set).and_return(true)
           allow(JsonWebToken).to receive(:decode).and_return({user_id: user.id, exp: Time.current.to_i + 1000})
           allow_any_instance_of(FollowPolicy).to receive(:delete?).and_return(false)
         end

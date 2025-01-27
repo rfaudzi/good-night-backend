@@ -7,9 +7,16 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
+  let(:user) { create(:user) }
+
   describe '#current_user' do
-    context 'with valid token' do
-      let(:token) { JsonWebToken.encode(user_id: 1) }
+    before do
+      allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+      allow_any_instance_of(Redis).to receive(:set).and_return(true)
+    end
+
+    context 'with valid token and user can be found' do
+      let(:token) { JsonWebToken.encode(user_id: user.id) }
 
       before do
         request.headers['Authorization'] = "Bearer #{token}"
@@ -20,6 +27,18 @@ RSpec.describe ApplicationController, type: :controller do
       end
     end
 
+    context 'with valid token and user cannot be found' do
+      let(:token) { JsonWebToken.encode({user_id: 1}, Time.current.to_i - 1) }
+
+      before do
+        request.headers['Authorization'] = "Bearer #{token}"
+      end
+
+      it 'returns an empty hash' do
+        expect(controller.current_user).to eq({})
+      end
+    end
+
     context 'with invalid token' do
       before do
         request.headers['Authorization'] = ''
@@ -27,6 +46,45 @@ RSpec.describe ApplicationController, type: :controller do
 
       it 'returns an empty hash' do
         expect(controller.current_user).to eq({})
+      end
+    end
+
+    context 'when token is expired' do
+      let(:token) { JsonWebToken.encode({user_id: user.id}, Time.current.to_i - 1) }
+
+      before do
+        request.headers['Authorization'] = "Bearer #{token}"
+      end
+
+      it 'returns an empty hash' do
+        expect(controller.current_user).to eq({})
+      end
+    end
+
+    context 'when decoded token is found in redis' do
+      let(:token) { JsonWebToken.encode({user_id: user.id}) }
+      let(:decoded_token) { JsonWebToken.decode(token) }
+      before do
+        request.headers['Authorization'] = "Bearer #{token}"
+        allow_any_instance_of(Redis).to receive(:get).and_return(decoded_token.to_json)
+      end
+
+      it 'returns the current user' do
+        expect(controller.current_user).to include(:user_id)
+      end
+    end
+
+    context 'when decoded token is not found in redis' do
+      let(:token) { JsonWebToken.encode({user_id: user.id}) }
+
+      before do
+        request.headers['Authorization'] = "Bearer #{token}"
+        allow_any_instance_of(Redis).to receive(:get).and_return(nil)
+      end
+
+      it 'returns an empty hash' do
+        expect_any_instance_of(Redis).to receive(:set)
+        expect(controller.current_user).to include(:user_id)
       end
     end
   end
