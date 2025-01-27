@@ -6,6 +6,7 @@ The "Good Night" application is designed to help users monitor their sleep patte
 * Ruby 3.2.2
 * Rails 7.0.6
 * PostgreSQL 15
+* Redis
 * Docker
 * Docker Compose
 
@@ -53,6 +54,8 @@ your application is running at `http://localhost:3000`.
 swagger is available at `http://localhost:3000/api-docs`
 
 * generate Auth token
+
+For testing purpose, you can generate an auth token for a user. This token will be used to authenticate the user in the application.
 
 `bundle exec rake auth:generate_token[<user_id>]`
 example:
