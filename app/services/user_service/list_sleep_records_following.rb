@@ -6,7 +6,7 @@ module UserService
       @params = params
       @limit = params[:limit] || 10
       @offset = params[:offset] || 0
-      @start_date = params[:start_date] || 1.week.ago.beginning_of_day
+      @start_date = params[:start_date]
       @start_date_condition = params[:start_date_condition] || "greater_than"
       @order_by = params[:order_by] || "duration"
       @order = params[:order] || "desc"

@@ -90,7 +90,7 @@ module SleepRecordService
     end
 
     def build_cache_key
-     "sleep_records:list:#{@user_ids}:#{@start_date || '_'}:#{@start_date_condition}:#{@closed_records}:#{@limit}:#{@offset}"
+     "sleep_records:list:#{@user_ids.sort.join(',')}:#{@start_date || '_'}:#{@start_date_condition}:#{@closed_records}:#{@order_by}:#{@order}:#{@limit}:#{@offset}"
     end
 
     def log_error(error)
