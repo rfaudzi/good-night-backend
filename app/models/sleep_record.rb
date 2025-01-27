@@ -3,6 +3,12 @@ class SleepRecord < ApplicationRecord
   
   validates :start_time, presence: true
   validate :end_time_after_start_time?
+
+  def self.to_list_objects(list_data)
+    list_data.map do |data|
+      new(data)
+    end
+  end
   
   private
   

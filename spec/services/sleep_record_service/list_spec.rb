@@ -18,8 +18,14 @@ RSpec.describe SleepRecordService::List, type: :service do
   describe '#call' do
     context 'success' do
       context 'when params are valid' do
-        it 'returns a list of sleep records' do
+        before do
           sleep_records
+        end
+
+        it 'returns a list of sleep records' do
+          expect(REDIS).to receive(:get).and_return(nil)
+          expect(REDIS).to receive(:set).and_return(true)
+
           result = SleepRecordService.list(params)
           expect(result[0]).to be_a(Array)
           expect(result[1][:total_count]).to eq(10)
@@ -29,10 +35,28 @@ RSpec.describe SleepRecordService::List, type: :service do
       end
 
       context 'when user_ids is not present' do
+        before do
+          params[:user_ids] = []
+        end
+
         it 'returns a list of sleep records' do
           result = SleepRecordService.list(params)
           expect(result[0]).to be_a(Array)
           expect(result[1][:total_count]).to eq(0)
+          expect(result[1][:limit]).to eq(10)
+          expect(result[1][:offset]).to eq(0)
+        end
+      end
+
+      context 'when cache data is present' do
+        before do
+          allow(REDIS).to receive(:get).and_return({data: sleep_records.to_a, total_count: 10}.to_json)
+        end
+
+        it 'returns a list of sleep records from cache' do
+          result = SleepRecordService.list(params)
+          expect(result[0]).to be_a(Array)
+          expect(result[1][:total_count]).to eq(10)
           expect(result[1][:limit]).to eq(10)
           expect(result[1][:offset]).to eq(0)
         end

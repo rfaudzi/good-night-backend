@@ -10,6 +10,7 @@ module SleepRecordService
       "equal" => "=",
       "not_equal" => "!="
     }
+    MAX_LIMIT_RECORDS = 100
 
     def initialize(params)
       @params = params
@@ -21,6 +22,7 @@ module SleepRecordService
       @order = params[:order] || "desc"
       @user_ids = params[:user_ids]
       @closed_records = params[:closed_records]
+      @limit = [@limit.to_i, MAX_LIMIT_RECORDS].min
     end
 
     def call
@@ -45,6 +47,14 @@ module SleepRecordService
 
     def sleep_records
       return [[], build_meta(0)] if @user_ids.blank?
+
+      cache_key = build_cache_key
+      cached_result = REDIS.get(cache_key)
+      if cached_result.present?
+        parsed_cached_result = JSON.parse(cached_result).with_indifferent_access
+        return [SleepRecord.to_list_objects(parsed_cached_result[:data]), build_meta(parsed_cached_result[:total_count])]
+      end
+
       query_result = SleepRecord.where(user_id: @user_ids)
 
       if @start_date.present?
@@ -60,6 +70,14 @@ module SleepRecordService
 
       result = query_result.order(@order_by => @order).limit(@limit).offset(@offset)
 
+      if result.present?
+        data_cache = {
+          total_count: result.count,
+          data: result.to_a
+        }
+        REDIS.set(cache_key, data_cache.to_json, ex: 1.hour)
+      end
+
       [result.to_a, build_meta(total_count)]
     end
 
@@ -69,6 +87,10 @@ module SleepRecordService
         limit: @limit.to_i,
         offset: @offset.to_i
       }
+    end
+
+    def build_cache_key
+     "sleep_records:list:#{@user_ids}:#{@start_date || '_'}:#{@start_date_condition}:#{@closed_records}:#{@limit}:#{@offset}"
     end
 
     def log_error(error)

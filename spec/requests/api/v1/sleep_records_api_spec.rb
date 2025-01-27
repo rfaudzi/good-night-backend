@@ -29,6 +29,8 @@ RSpec.describe 'Sleep Records API', type: :request do
 
         before do
           allow(JsonWebToken).to receive(:decode).and_return({ user_id: user.id, exp: Time.current.to_i + 1000 })
+          allow(REDIS).to receive(:set).and_return(true)
+          allow(REDIS).to receive(:get).and_return(nil)
         end
 
         examples 'application/json' => {
